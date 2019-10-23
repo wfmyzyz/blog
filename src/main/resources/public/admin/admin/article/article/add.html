@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文章添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <script src="/layuiadmin/layui/layui.js"></script>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+    <style>
+        .head-btn{
+            display: block;
+            width: 100px;
+            height: 35px;
+            border: 1px solid #efefef;
+            text-align: center;
+            line-height: 35px;
+            position: absolute;
+            color: #999;
+            cursor: pointer;
+            bottom: 5px;
+        }
+        .add-head-btn{
+            left: 5px;
+        }
+        .remove-head-btn{
+            display: none;
+            left: 125px;
+        }
+        .head-btn:hover{
+            background: #efefef;
+        }
+        .label-box span{
+            display: inline-block;
+            height: 25px;
+            padding: 0 8px;
+            line-height: 25px;
+            background: #999;
+            margin: 5px 8px;
+            float: left;
+            font-size: 12px;
+            border-radius: 10px;
+            color: #fff;
+            position: relative;
+        }
+        .label-box span em{
+            display: none;
+            height: 25px;
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            line-height: 25px;
+            right: 0;
+            background: rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: all linear 0.3s;
+        }
+        .label-box span:hover em{
+            display: inline-block;
+        }
+        .label-box span em:hover{
+            transform: rotate(180deg);
+        }
+        .label-hidden-box span{
+            display: inline-block;
+            height: 25px;
+            padding: 0 8px;
+            line-height: 25px;
+            background: #999;
+            margin: 5px 8px;
+            float: left;
+            font-size: 12px;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .label-hidden-box span:hover{
+            background: #ff8a00;
+        }
+        .label-hidden-box .span-on{
+            background: #ff8a00;
+        }
+        .clear{
+            clear: both;
+        }
+        #add-label-btn{
+            float: right;
+            margin-right: 10px;
+        }
+        .w-e-text{
+            min-height: 400px;
+        }
+        .fixed_top{
+            position: fixed;
+            top: 0px;
+            width: 98.2%;
+            z-index: 99999;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-fluid" style="margin-top: 50px">
+        <div class="layui-form layui-form-pane">
+            <input type="hidden" id="article-id" />
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章主题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" id="article-title" required  lay-verify="required" placeholder="请输入主题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文章头图</label>
+                <div class="layui-input-block">
+                    <div class="head-portrait" style="height: 300px;border: 1px solid #e6e6e6;background: #fff;position: relative">
+                        <span class="head-btn add-head-btn" style="" data-opt="add" id="upload-head"><i class="layui-icon">&#xe67c;</i>上传头图</span>
+                        <span class="head-btn remove-head-btn" style="" data-opt="remove" id="remove-head"><i class="layui-icon">&#xe640;</i>删除头图</span>
+                    </div>
+                </div>
+                <input id="head-hidden-path" type="hidden" />
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label"><button id="add-label" class="layui-btn layui-btn-xs">添加标签</button></label>
+                <div class="layui-input-block">
+                    <div class="label-box" style="min-height: 50px;border: 1px solid #e6e6e6;background: #fff">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文章简介</label>
+                <div class="layui-input-block">
+                    <textarea name="desc" id="article-desc" placeholder="请输入简介内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div id="article-big-box">
+                <div class="layui-form-item layui-form-text" id="article-write-box">
+                    <label class="layui-form-label">文章内容</label>
+                    <div class="layui-input-block">
+                        <div id="editor1" class="toolbar" style="border: 1px solid #ddd;background: #fff">
+                        </div>
+                        <div id="editor2" class="text" style="border: 1px solid #ddd;background: #fff"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+                            <p>在此输入文章内容…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="layui-btn layui-btn-normal" id="add-article-btn" style="float: right;margin: 10px 20px 30px 0">添加文章</button>
+            </div>
+        </div>
+    </div>
+    <div id="label-hidden-box" class="label-hidden-box" style="padding: 20px;display: none">
+        <div class="label-box-into">
+        </div>
+        <div class="clear"></div>
+        <button class="layui-btn layui-btn-warm layui-btn-sm" id="add-label-btn">添加</button>
+        <div class="clear"></div>
+    </div>
+    <script>
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#upload-head' //绑定元素
+                ,url: '/admin/admin/article/uploadHead' //上传接口
+                ,accept: 'images'
+                ,acceptMime: 'image/*'
+                ,data: {
+                    imagePath: function(){
+                        return $('#head-hidden-path').val();
+                    }
+                }
+                ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                    layer.load(); //上传loading
+                }
+                ,done: function(res){
+                    layer.closeAll("loading");
+                    if (res.code == 200) {
+                        layer.alert("上传成功！");
+                        $(".head-portrait").css("background","url('"+res.map.data+"') no-repeat").css("background-size","100% 100%");
+                        $("#head-hidden-path").val(res.map.data);
+                        $(".add-head-btn").html('<i class="layui-icon">&#xe67c;</i>修改头图');
+                        if (GetQueryString("articleId") != null) {
+                            $(".remove-head-btn").css("display","none");
+                        }else{
+                            $(".remove-head-btn").css("display","block");
+                        }
+                        return false;
+                    }
+                    layer.alert(res.map.error);
+                    //上传完毕回调
+                }
+                ,error: function(){
+                    //请求异常回调
+                }
+            });
+        });
+        $(".remove-head-btn").click(function () {
+            layer.load();
+            $.ajax({
+                type: "post",
+                url: "/admin/admin/article/deleteHead",
+                data: {imagePath:$("#head-hidden-path").val()},
+                success: function (result) {
+                    layer.closeAll("loading")
+                    if (result.code == 200) {
+                        $(".head-portrait").css("background","#fff");
+                        layer.alert("删除成功！");
+                        $("#head-hidden-path").val("");
+                        $("#remove-head").css("display","none");
+                        $(".add-head-btn").html('<i class="layui-icon">&#xe67c;</i>上传头图');
+                        return false;
+                    }
+                    layer.alert(result.map.error);
+                }
+            })
+        })
+        $(window).scroll(function() {
+            var top1 = $('#article-big-box').offset().top;
+            var gun = $(document).scrollTop();
+            var top = top1-gun;
+            if (top <= 0) {
+                $(".w-e-toolbar").addClass("fixed_top");
+            }else{
+                $(".w-e-toolbar").removeClass("fixed_top");
+            }
+        });
+    </script>
+    <script>
+        $("#add-label").click(function () {
+            layer.open({
+                type: 1,
+                title: "标签盒子",
+                content: $('#label-hidden-box'),
+                area: '600px'
+            });
+        })
+        $(document).on("click",".label-box-into span",function () {
+            if ($(this).attr("data-is") == "true"){
+                $(this).attr("data-is","false");
+                $(this).removeClass("span-on");
+                return false;
+            }
+            $(this).attr("data-is","true");
+            $(this).addClass("span-on");
+        })
+        $("#add-label-btn").click(function () {
+            $(".span-on").each(function () {
+                $(".label-box").append('<span data-id="'+$(this).attr("data-id")+'">'+$(this).text()+'<em class="remove-label layui-icon layui-icon-close"></em></span>');
+                $(this).remove();
+            })
+        })
+        $(document).on("click",".remove-label",function () {
+            $(".label-box-into").append('<span data-id="'+$(this).parent("span").attr("data-id")+'">'+$(this).parent("span").text()+'</span>');
+            $(this).parent("span").remove();
+        })
+        var E = window.wangEditor
+        var editor = new E('#editor1', '#editor2')  // 两个参数也可以传入 elem 对象，class 选择器
+        editor.customConfig.uploadImgServer = '/admin/admin/article/uploadInto'
+        editor.customConfig.uploadFileName = 'file'
+        editor.create()
+    </script>
+    <script>
+        $("#add-article-btn").click(function () {
+            var title = $("#article-title").val();
+            var headImage = $("#head-hidden-path").val();
+            var desc = $("#article-desc").val();
+            var text = editor.txt.html();
+            var label = "";
+            $(".label-box span").each(function () {
+                label[$(this).index()] = $(this).attr("data-id");
+                if ($(this).index() == $(".label-box span").length-1){
+                    label += $(this).attr("data-id");
+                    return;
+                }
+                label += $(this).attr("data-id")+",";
+            })
+            if ($.trim(title) == "" || $.trim(headImage) == "" || $.trim(desc) == "" || $.trim(text) == ""){
+                layer.alert("必填参数不允许为空！");
+            }
+            if (GetQueryString("articleId") != null) {
+                $.ajax({
+                    type: "post",
+                    url: "/admin/admin/article/update",
+                    data: {"title":title,"headImage":headImage,"introduce":desc,"text":text,"labelIds":label,"articleId":$("#article-id").val()},
+                    success: function (result) {
+                        layer.closeAll("loading");
+                        if (result.code == 200) {
+                            layer.alert(result.map.success);
+                            return false;
+                        }
+                        layer.alert(result.map.error);
+                    }
+                })
+            }else {
+                layer.load();
+                $.ajax({
+                    type: "post",
+                    url: "/admin/admin/article/add",
+                    data: {"title":title,"headImage":headImage,"introduce":desc,"text":text,"labelIds":label},
+                    success: function (result) {
+                        layer.closeAll("loading");
+                        if (result.code == 200) {
+                            layer.alert("添加成功！");
+                            return false;
+                        }
+                        layer.alert(result.map.error);
+                    }
+                })
+            }
+        })
+    </script>
+    <script>
+        function GetQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+        if (GetQueryString("articleId") != null) {
+            $.ajax({
+                type: "get",
+                url: "/admin/admin/article/get/"+GetQueryString("articleId"),
+                success: function (result) {
+                    $("#article-title").val(result.map.data.title);
+                    $(".head-portrait").css("background","url('"+result.map.data.headImage+"') no-repeat").css("background-size","100% 100%");
+                    $("#head-hidden-path").val(result.map.data.headImage);
+                    $(".add-head-btn").html('<i class="layui-icon">&#xe67c;</i>修改头图');
+                    $(".remove-head-btn").css("display","block");
+                    $("#article-desc").val(result.map.data.introduce);
+                    editor.txt.html(result.map.data.text);
+                    $("#add-article-btn").text("修改博客");
+                    $("#remove-head").css("display","none");
+                    $("#article-id").val(result.map.data.articleId);
+                }
+            })
+            $.ajax({
+                type: "get",
+                url: "/admin/admin/articleBindLabel/getArticleBindLabel/"+GetQueryString("articleId"),
+                success: function (result) {
+                    for(var i=0;i<result.map.data.length;i++){
+                        $(".label-box").append('<span data-id="'+result.map.data[i].labelId+'">'+result.map.data[i].name+'<em class="remove-label layui-icon layui-icon-close"></em></span>');
+                    }
+                }
+            })
+            $.ajax({
+                type: "get",
+                url: "/admin/admin/articleBindLabel/getNoArticleBindLabel/"+GetQueryString("articleId"),
+                success: function (result) {
+                    console.log(result)
+                    for(var i=0;i<result.map.data.length;i++){
+                        $(".label-box-into").append('<span data-id="'+result.map.data[i].labelId+'">'+result.map.data[i].name+'</span>');
+                    }
+                }
+            })
+        }
+        if (GetQueryString("articleId") == null) {
+            $.ajax({
+                type: "get",
+                url: "/admin/admin/article/label/getAllLabel",
+                success: function (result) {
+                    var str = "";
+                    for (var i = 0; i < result.map.data.length; i++) {
+                        str += '<span data-id="' + result.map.data[i].labelId + '">' + result.map.data[i].name + '</span>';
+                    }
+                    $(".label-box-into").html(str);
+                }
+            })
+        }
+    </script>
+</body>
+</html>

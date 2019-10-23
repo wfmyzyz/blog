@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>吾非墨鱼子焉知-博客首页</title>
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script src="/layuiadmin/layui/layui.js"></script>
+    <style>
+        header{
+            width: 100%;
+            background: rgba(213,100,100,1);
+        }
+        .head{
+            text-align: center;
+        }
+        .head h1{
+            display: inline-block;
+            margin: 25px;
+            color: rgba(255,255,255,.7);
+            letter-spacing: 0.3rem;
+            transition: all linear 0.3s;
+            font-size: 2rem;
+        }
+        .head h1:hover{
+            color: rgba(255,255,255,1);
+        }
+        .head h1 span{
+            font-size: 1.2rem;
+        }
+        .nav{
+            height: 46px;
+            background: #4a4a4a;
+            opacity: .9;
+        }
+        .magin{
+            width: 1200px;
+            margin: 0 auto;
+        }
+        .item-nav{
+            float: left;
+            line-height: 46px;
+            background: rgba(213,100,100,0);
+            margin: 0 1px;
+            position: relative;
+        }
+        .item-nav a{
+            display: inline-block;
+            padding: 0 25px;
+            color: #fff;
+            font-size: 1rem;
+            transition: background-color linear 0.2s;
+        }
+        .item-nav-on .nav-title{
+            background: rgba(213,100,100,1);
+        }
+        .sub-ul{
+            width: 100%;
+            text-align: center;
+            height: 0;
+            overflow: hidden;
+            position: absolute;
+        }
+        .sub-li{
+            background: rgba(213,100,100,0.8);
+            color: #fff;
+            transform: rotateY(-90deg);
+            -webkit-transform: rotateY(-90deg);	/* Safari 和 Chrome */
+            -moz-transform: rotateY(-90deg);
+            transition: all linear 0.5s;
+        }
+        .item-nav:hover .sub-ul{
+            height: auto;
+        }
+        .item-nav:hover .nav-title{
+            background: rgba(213,100,100,1);
+        }
+        .item-nav:hover .sub-li{
+            transform: rotateY(0deg);
+            -webkit-transform: rotateY(0deg);	/* Safari 和 Chrome */
+            -moz-transform: rotateY(0deg);
+        }
+        .sub-li:hover{
+            background: rgba(0,0,0,0.5);
+        }
+
+        section{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="head">
+            <a href="#"><h1>吾非墨鱼子焉知-<span>博客</span></h1></a>
+        </div>
+        <div class="nav">
+            <div class="magin">
+                <div class="layui-row">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <ul>
+                            <li class="item-nav item-nav-on"><a href="#" class="nav-title">首页</a></li>
+                            <li class="item-nav">
+                                <a href="#" class="nav-title">博客</a>
+                                <ul class="sub-ul">
+                                    <li class="sub-li"><a href="#">java</a></li>
+                                    <li class="sub-li"><a href="#">php</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="magin">
+        </div>
+    </section>
+</body>
+</html>
